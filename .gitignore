@@ -1,0 +1,17 @@
+__pycache__/
+**/__pycache__/**
+.vscode
+.dumbo.json
+.DS_Store
+.*.swp
+*.tmp
+*.pkl
+.pt
+.pth
+.ckpt
+.tar
+.zipgit 
+.rar
+*.jpg
+*.png
+hw3_data/*
