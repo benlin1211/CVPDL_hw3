@@ -10,6 +10,7 @@ import argparse
 import os
 import sys
 from pathlib import Path
+import json
 
 import cv2
 import numpy as np
@@ -34,6 +35,7 @@ from utils.torch_utils import load_classifier, select_device, time_sync
 @torch.no_grad()
 def run(weights=ROOT / 'yolov5s.pt',  # model.pt path(s)
         source=ROOT / 'data/images',  # file/dir/URL/glob, 0 for webcam
+        not_for_cvpdl=False,
         imgsz=640,  # inference size (pixels)
         conf_thres=0.25,  # confidence threshold
         iou_thres=0.45,  # NMS IOU threshold
@@ -41,6 +43,8 @@ def run(weights=ROOT / 'yolov5s.pt',  # model.pt path(s)
         device='',  # cuda device, i.e. 0 or 0,1,2,3 or cpu
         view_img=False,  # show results
         save_txt=False,  # save results to *.txt
+        save_json=True,  # save results to json
+        output_path="./output/pred.json",
         save_conf=False,  # save confidences in --save-txt labels
         save_crop=False,  # save cropped prediction boxes
         nosave=False,  # do not save images/videos
@@ -123,6 +127,9 @@ def run(weights=ROOT / 'yolov5s.pt',  # model.pt path(s)
         cudnn.benchmark = True  # set True to speed up constant image size inference
         dataset = LoadStreams(source, img_size=imgsz, stride=stride, auto=pt)
         bs = len(dataset)  # batch_size
+    elif not not_for_cvpdl:
+        dataset = LoadImages(source, img_size=imgsz, stride=stride, auto=pt, is_for_cvpdl=True)
+        bs = 1  # batch_size
     else:
         dataset = LoadImages(source, img_size=imgsz, stride=stride, auto=pt)
         bs = 1  # batch_size
@@ -132,7 +139,18 @@ def run(weights=ROOT / 'yolov5s.pt',  # model.pt path(s)
     if pt and device.type != 'cpu':
         model(torch.zeros(1, 3, *imgsz).to(device).type_as(next(model.parameters())))  # run once
     dt, seen = [0.0, 0.0, 0.0], 0
+
+    if save_json:
+        assert output_path is not None, "output_path not given."
+        json_name = output_path.split("/")[-1]
+        output_dir = output_path.replace(json_name, "")
+        json_result={}
+        image_root = f"{str(Path(source).resolve())}/"
+        os.makedirs(output_dir,exist_ok=True)
+
     for path, img, im0s, vid_cap in dataset:
+        # retrive file name
+        key_name = path.replace(image_root, "")
         t1 = time_sync()
         if onnx:
             img = img.astype('float32')
@@ -189,8 +207,11 @@ def run(weights=ROOT / 'yolov5s.pt',  # model.pt path(s)
             pred = apply_classifier(pred, modelc, img, im0s)
 
         # Process predictions
+        if save_json:
+            single_result = {}
         for i, det in enumerate(pred):  # per image
             seen += 1
+
             if webcam:  # batch_size >= 1
                 p, s, im0, frame = path[i], f'{i}: ', im0s[i].copy(), dataset.count
             else:
@@ -203,6 +224,8 @@ def run(weights=ROOT / 'yolov5s.pt',  # model.pt path(s)
             gn = torch.tensor(im0.shape)[[1, 0, 1, 0]]  # normalization gain whwh
             imc = im0.copy() if save_crop else im0  # for save_crop
             annotator = Annotator(im0, line_width=line_thickness, example=str(names))
+
+            # det: x, y, x, y, conf, label
             if len(det):
                 # Rescale boxes from img_size to im0 size
                 det[:, :4] = scale_coords(img.shape[2:], det[:, :4], im0.shape).round()
@@ -213,7 +236,24 @@ def run(weights=ROOT / 'yolov5s.pt',  # model.pt path(s)
                     s += f"{n} {names[int(c)]}{'s' * (n > 1)}, "  # add to string
 
                 # Write results
+                if save_json:
+                    boxes = []
+                    labels = []
+                    scores = []
+
                 for *xyxy, conf, cls in reversed(det):
+                    ## Save as submission format:
+                    if save_json:
+                        if device == "cpu":
+                            boxes.append(np.array(xyxy).tolist())
+                            labels.append(np.array(cls, dtype=int).tolist())
+                            scores.append(np.array(conf).tolist())
+                        # print(np.array(xyxy), np.array(conf))
+                        else:
+                            boxes.append(np.array(torch.tensor(xyxy, device='cpu')).tolist())
+                            labels.append(np.array(cls.detach().cpu(), dtype=int).tolist())
+                            scores.append(np.array(conf.detach().cpu()).tolist())
+
                     if save_txt:  # Write to file
                         xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) / gn).view(-1).tolist()  # normalized xywh
                         line = (cls, *xywh, conf) if save_conf else (cls, *xywh)  # label format
@@ -226,6 +266,9 @@ def run(weights=ROOT / 'yolov5s.pt',  # model.pt path(s)
                         annotator.box_label(xyxy, label, color=colors(c, True))
                         if save_crop:
                             save_one_box(xyxy, imc, file=save_dir / 'crops' / names[c] / f'{p.stem}.jpg', BGR=True)
+                # print(boxes)
+                # print(labels)
+                # print(scores)
 
             # Print time (inference-only)
             print(f'{s}Done. ({t3 - t2:.3f}s)')
@@ -255,6 +298,20 @@ def run(weights=ROOT / 'yolov5s.pt',  # model.pt path(s)
                         vid_writer[i] = cv2.VideoWriter(save_path, cv2.VideoWriter_fourcc(*'mp4v'), fps, (w, h))
                     vid_writer[i].write(im0)
 
+        if save_json:
+            single_result["boxes"] = boxes
+            single_result["labels"] = labels
+            single_result["scores"] = scores
+            #print(single_result)
+            json_result[key_name] = single_result
+
+    if save_json:
+        # Save results as .json      
+        with open(output_path, 'w') as fp:
+            json.dump(json_result, fp)
+        print(f"Done. json result is saved at {output_path}")
+
+
     # Print results
     t = tuple(x / seen * 1E3 for x in dt)  # speeds per image
     print(f'Speed: %.1fms pre-process, %.1fms inference, %.1fms NMS per image at shape {(1, 3, *imgsz)}' % t)
@@ -267,15 +324,19 @@ def run(weights=ROOT / 'yolov5s.pt',  # model.pt path(s)
 
 def parse_opt():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--weights', nargs='+', type=str, default='/home/smtm/qhd/code/code_git/yolov5-6.0_R-yolov3/runs/train/exp198-RTTS_CYCLE/weights/best.pt', help='model path(s)')
-    parser.add_argument('--source', type=str, default=ROOT / 'data/video1', help='file/dir/URL/glob, 0 for webcam')
-    parser.add_argument('--imgsz', '--img', '--img-size', nargs='+', type=int, default=[640], help='inference size h,w')
+    parser.add_argument('--weights', nargs='+', type=str, default='./runs/train/exp/weights/best.pt', help='model path(s)')
+    # parser.add_argument('--source', type=str, default='./dataset/Normal_to_Foggy/images/Foggy_val', help='file/dir/URL/glob, 0 for webcam')
+    parser.add_argument('--not_for_cvpdl', action='store_true', help='not for cvpdl')
+    parser.add_argument('--source', type=str, default='../hw3_data_eval/hw3_dataset/', help='input image directories')
+    parser.add_argument('--imgsz', '--img', '--img-size', nargs='+', type=int, default=[2048], help='inference size h,w')
     parser.add_argument('--conf-thres', type=float, default=0.5, help='confidence threshold')
     parser.add_argument('--iou-thres', type=float, default=0.45, help='NMS IoU threshold')
     parser.add_argument('--max-det', type=int, default=1000, help='maximum detections per image')
     parser.add_argument('--device', default='', help='cuda device, i.e. 0 or 0,1,2,3 or cpu')
     parser.add_argument('--view-img', action='store_true', help='show results')
     parser.add_argument('--save-txt', default=True, help='save results to *.txt')
+    parser.add_argument('--save_json', default=True, help='save results to json') 
+    parser.add_argument('--output_path', type=str, default='./output/pred.json', help='json file output destination, must provide if save_json=True')
     parser.add_argument('--save-conf', action='store_true', help='save confidences in --save-txt labels')
     parser.add_argument('--save-crop', action='store_true', help='save cropped prediction boxes')
     parser.add_argument('--nosave', action='store_true', help='do not save images/videos')

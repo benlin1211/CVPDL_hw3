@@ -158,9 +158,12 @@ class _RepeatSampler(object):
 
 class LoadImages:
     # YOLOv5 image/video dataloader, i.e. `python detect.py --source image.jpg/vid.mp4`
-    def __init__(self, path, img_size=640, stride=32, auto=True):
+    def __init__(self, path, img_size=640, stride=32, auto=True, is_for_cvpdl=False):
         p = str(Path(path).resolve())  # os-agnostic absolute path
-        if '*' in p:
+
+        if is_for_cvpdl: #  testing images directory (e.g. input/test_dir/) contains subdirectories (what a idiot setting)
+            files = sorted(glob.glob(f"{p}/**/*.png", recursive=True))  # glob
+        elif '*' in p:
             files = sorted(glob.glob(p, recursive=True))  # glob
         elif os.path.isdir(p):
             files = sorted(glob.glob(os.path.join(p, '*.*')))  # dir

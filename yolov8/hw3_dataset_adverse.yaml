@@ -1,0 +1,15 @@
+path: /mnt/sdb_path/ZhongWei/CVPDL_hw3/yolov8/datasets/hw3_dataset_adverse
+train: images/train
+val: images/val
+test: images/test
+nc: 9
+names:
+  0: background
+  1: person
+  2: car
+  3: truck
+  4: bus
+  5: rider
+  6: motorcycle
+  7: bicycle
+  8: train

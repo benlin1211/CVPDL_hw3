@@ -118,7 +118,6 @@ class DAImgHead(nn.Module):
             torch.nn.init.constant_(l.bias, 0)
 
     def forward(self, x):
-        
         t = F.relu(self.conv1_da(x))
         img_feature = self.conv2_da(t)
         return img_feature
@@ -128,6 +127,9 @@ class netD_pixel(nn.Module):
         super(netD_pixel, self).__init__()
         self.conv1 = nn.Conv2d(192, 256, kernel_size=1, stride=1,
                   padding=0, bias=False)
+        # # For yolo5l:
+        # self.conv1 = nn.Conv2d(256, 256, kernel_size=1, stride=1,
+        #           padding=0, bias=False)
         self.conv2 = nn.Conv2d(256, 128, kernel_size=1, stride=1,
                                padding=0, bias=False)
         self.conv3 = nn.Conv2d(128, 1, kernel_size=1, stride=1,
@@ -181,10 +183,14 @@ class Model(nn.Module):
         self.model, self.save = parse_model(deepcopy(self.yaml), ch=[ch])  # model, savelist
         self.names = [str(i) for i in range(self.yaml['nc'])]  # default names
         self.inplace = self.yaml.get('inplace', True)
-        # device = torch.device("cuda:0")
+        device = torch.device("cuda:0")
         self.netD1 = DAImgHead(192)
         self.netD2 = DAImgHead(384)
         self.netD3 = DAImgHead(768)
+        # # for yolo5l:
+        # self.netD1 = DAImgHead(256)
+        # self.netD2 = DAImgHead(512)
+        # self.netD3 = DAImgHead(1024)
         self.netD_pixel = netD_pixel()
 
         # Build strides, anchors
