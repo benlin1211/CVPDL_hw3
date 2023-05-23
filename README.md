@@ -1,10 +1,10 @@
 # CVPDL_hw3
 ## Envirement Setup:
-    # create conda env
+    # Create conda env:
     conda create -n R_YOLO python=3.10
-    # activate the enviorment
+    # Activate the enviorment:
     conda activate R_YOLO
-    # install 
+    # Install:
     pip install -r requirements.txt
 
 ## Run training code:
