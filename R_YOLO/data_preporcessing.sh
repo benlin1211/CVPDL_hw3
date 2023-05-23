@@ -36,5 +36,5 @@ python utils/label_json2Ryolo.py --coco_file ../hw3_data/hw3_dataset/org/train.c
 
 
 # move the translation image
-cp -r ./dataset/Normal_to_Foggy/images/Foggy_fake/* ./dataset/Normal_to_Foggy/images/Foggy_train/ 
-cp -r ./dataset/Normal_to_Foggy/images/Normal_fake/* ./dataset/Normal_to_Foggy/images/Normal_train/ 
+cp -r ./dataset/Normal_to_Foggy/images/Foggy_fake/* ./dataset/Normal_to_Foggy/images/Normal_train/ 
+cp -r ./dataset/Normal_to_Foggy/images/Normal_fake/* ./dataset/Normal_to_Foggy/images/Foggy_train/ 

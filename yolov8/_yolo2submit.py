@@ -8,7 +8,7 @@ def convert_and_save(file_contents, out_file):
     for pred in file_contents:
         print(pred)
         #print(pred['image_id'])
-        fname = str(pred['image_id']) + '.png'
+        fname = 'fog/public_test/' + str(pred['image_id']) + '.png'
 
         if fname not in results.keys():
             res = {} 

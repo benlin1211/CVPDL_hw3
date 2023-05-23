@@ -13,6 +13,8 @@ import torchvision.transforms as transforms
 import json
 from tqdm import tqdm
 import cv2
+from pathlib import Path
+
 def get_args_parser():
     parser = argparse.ArgumentParser('Set transformer detector', add_help=False)
     # parser.add_argument('--lr', default=1e-4, type=float)
@@ -20,7 +22,7 @@ def get_args_parser():
     # ===================== Train Config ====================
     parser.add_argument('--dont_freeze', action='store_true') 
     parser.add_argument('--epochs', default=400, type=int) 
-    parser.add_argument('--batch', default=16, type=int)
+    parser.add_argument('--batch', default=2, type=int)
     parser.add_argument('--lr0', default=1e-2, type=float)
     parser.add_argument('--lrf', default=1e-5, type=float)
     #  https://docs.ultralytics.com/modes/train/#arguments
@@ -32,15 +34,19 @@ def get_args_parser():
     # ===================== Test Config =====================
     parser.add_argument('--test', action='store_true')
     parser.add_argument('--test_path', default='./datasets/hw1_dataset_yolo/images/test', type=str)
-    parser.add_argument('--out_path', default='./pred_test.json', type=str)
+    parser.add_argument('--out_path', default='./output/pred_test.json', type=str)
     parser.add_argument('--report', action='store_true')
     parser.add_argument('--is_adverse', action='store_true') 
     return parser
 
-def generate_result(model, data_path, confidence):
-
+def generate_result(model, data_path, confidence, prefix):
     results = {}
-    pbar = tqdm(glob.glob(os.path.join(data_path, "*.jpg")))
+    
+    data_path = f"{str(Path(data_path).resolve())}" + "/"
+    print(data_path)
+
+    # pbar = tqdm(glob.glob(os.path.join(data_path, "*.png")))
+    pbar = tqdm(sorted(glob.glob(f"{data_path}/**/*.png", recursive=True)))
     for img_name in pbar:
         img = Image.open(img_name)
         pred = model(img, conf=args.confidence, verbose=False)[0]
@@ -60,7 +66,10 @@ def generate_result(model, data_path, confidence):
         res['boxes'] = boxes.tolist() 
         res['labels'] = labels.tolist() 
         res['scores'] = scores.tolist() 
-        results[img_name.split("/")[-1]] = res
+        key_name = img_name.replace(data_path, "")
+        # print(key_name)
+        key_name = f'{prefix}/val/' + key_name.split("/")[-1]
+        results[key_name] = res
     
     return results
 
@@ -75,25 +84,32 @@ def main(args):
         print(f"eval, resume from {args.resume}, confidence={args.confidence}")
         model = YOLO(args.resume)
         # https://docs.ultralytics.com/modes/predict/#sources
+        # if args.is_adverse:
+        #     metrics = model.val(data="./hw3_dataset_adverse.yaml", batch=16, save_json=True, conf=args.confidence)
+        # else:
+        #     metrics = model.val(data="./hw3_dataset_yolo.yaml", batch=16, save_json=True, conf=args.confidence)
         if args.is_adverse:
-            metrics = model.val(data="./hw3_dataset_adverse.yaml", batch=16, save_json=True, conf=args.confidence)
-        else:
-            metrics = model.val(data="./hw3_dataset_yolo.yaml", batch=16, save_json=True, conf=args.confidence)
-        results = generate_result(model, args.eval_path, args.confidence)
-        with open('./pred_eval.json', 'w') as fp:
-            json.dump(results, fp)
-        print("over")
-        return
-
-    if args.test:
-        print(f"test, resume from {args.resume}")
-        model = YOLO(args.resume)
-        results = generate_result(model, args.test_path, args.confidence)
+            prefix = "fog"
+        else: 
+            prefix = "org"
+        results = generate_result(model, args.eval_path, args.confidence, prefix=prefix)
         out_dir = args.out_path.replace(args.out_path.split('/')[-1], "")
         os.makedirs(out_dir, exist_ok=True)
         with open(args.out_path, 'w') as fp:
             json.dump(results, fp)
-        print(f"Result is saved at {args.out_path}")
+        print(f"Eval result is saved at {args.out_path}")
+        return
+
+    if args.test:
+        # print(f"test, resume from {args.resume}")
+        # model = YOLO(args.resume)
+        # results = generate_result(model, args.test_path, args.confidence)
+        # out_dir = args.out_path.replace(args.out_path.split('/')[-1], "")
+        # os.makedirs(out_dir, exist_ok=True)
+        # with open(args.out_path, 'w') as fp:
+        #     json.dump(results, fp)
+        # print(f"Test result is saved at {args.out_path}")
+        print("WIP")
         return
     
     if args.report:
@@ -135,6 +151,8 @@ def main(args):
     # Train the model
     # https://github.com/ultralytics/ultralytics/issues/713
     model.train(data="./hw3_dataset_yolo.yaml", 
+                imgsz=(1024, 2048),
+                device="0",
                 epochs=args.epochs, 
                 batch=args.batch, 
                 lr0=args.lr0, 
