@@ -56,7 +56,7 @@ Inference on val:
 
     bash hw3_inference.sh ./hw3_data_eval/hw3_dataset/ ./output/pred_eval.json 4
     #python detect.py --weight ./runs/train/exp/weights/best.pt --source ../hw3_data_eval/hw3_dataset/ --output_path ./output/pred_eval.json
-    python ../check_your_prediction_valid.py ./output/pred_eval.json ../hw3_data/hw3_dataset/fog/val.coco.json 
+    python ./check_your_prediction_valid.py ./output/pred_eval.json ./hw3_data/hw3_dataset/fog/val.coco.json 
 
 Inference on public_test:
 
