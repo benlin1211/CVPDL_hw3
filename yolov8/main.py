@@ -35,8 +35,10 @@ def get_args_parser():
     parser.add_argument('--test', action='store_true')
     parser.add_argument('--test_path', default='./datasets/hw1_dataset_yolo/images/test', type=str)
     parser.add_argument('--out_path', default='./output/pred_test.json', type=str)
+    parser.add_argument('--file_name', default='./all_feature.npy', type=str)
     parser.add_argument('--report', action='store_true')
     parser.add_argument('--is_adverse', action='store_true') 
+    
     return parser
 
 def generate_result(model, data_path, confidence, prefix):
@@ -101,28 +103,49 @@ def main(args):
         return
 
     if args.test:
-        # print(f"test, resume from {args.resume}")
-        # model = YOLO(args.resume)
-        # results = generate_result(model, args.test_path, args.confidence)
-        # out_dir = args.out_path.replace(args.out_path.split('/')[-1], "")
-        # os.makedirs(out_dir, exist_ok=True)
-        # with open(args.out_path, 'w') as fp:
-        #     json.dump(results, fp)
-        # print(f"Test result is saved at {args.out_path}")
-        print("WIP")
+        print(f"test, resume from {args.resume}")
+        model = YOLO(args.resume)
+        results = generate_result(model, args.test_path, args.confidence)
+        out_dir = args.out_path.replace(args.out_path.split('/')[-1], "")
+        os.makedirs(out_dir, exist_ok=True)
+        with open(args.out_path, 'w') as fp:
+            json.dump(results, fp)
+        print(f"Test result is saved at {args.out_path}")
+        #print("WIP")
         return
     
     if args.report:
-        print("Report, resume from {args.resume}")
+        layer_selected = -1
+        features = {}       
+        def get_features(name):
+            def hook(model, input, output):
+                x, y = output
+                # print(x.shape)
+                features[name] = x.detach().cpu().numpy().flatten()
+            return hook
+        
+        print(f"Report, resume from {args.resume}")
         model = YOLO(args.resume)
-        from torchvision import transforms
-        report_img_name = os.path.join("./datasets/hw1_dataset_yolo/images/test/IMG_2574_jpeg_jpg.rf.ca0c3ad32384309a61e92d9a8bef87b9.jpg")
-        img_PIL = Image.open(report_img_name).convert('RGB')
-        res = model.predict(img_PIL, save_json=True, conf=args.confidence)
 
-        res_plotted = res[0].plot()
-        cv2.imwrite("./report.jpg", res_plotted)
+        # register the forward hook
+        model.model.model[layer_selected].register_forward_hook(get_features('desired_feature_layer'))
+        
+        data_path = f"{str(Path(args.test_path).resolve())}" + "/"
+        # pbar = tqdm(glob.glob(os.path.join(data_path, "*.png")))
+        pbar = tqdm(sorted(glob.glob(f"{data_path}/**/*.png", recursive=True)))
+        all_features = []
+        for img_name in pbar:
+            img = Image.open(img_name)
+            pred = model(img, conf=args.confidence, verbose=False)[0]
+            # print(features['desired_feature_layer'].shape)
+            all_features.append(features['desired_feature_layer'])
+
+        all_features = np.array(all_features)
+        with open(args.file_name, 'wb') as f:
+            np.save(f, all_features)
+        print(f"SAved feature at {args.file_name}")
         return
+    
 
     # Load a model
     if args.resume:

@@ -41,8 +41,8 @@ features = {}
 def get_features(name):
     def hook(model, input, output):
         x, y = output
-        # print(x.shape)
         features[name] = x.detach().cpu().numpy().flatten()
+        # features[name] = output.detach().cpu().numpy().flatten()
     return hook
 
 @torch.no_grad()
@@ -298,12 +298,10 @@ def run(weights=ROOT / 'yolov5s.pt',  # model.pt path(s)
     if update:
         strip_optimizer(weights)  # update model (to fix SourceChangeWarning)
 
-
-    all_features = np.array(all_features)
     # groups = np.array(groups)
     # print(all_features.shape)
     # print(groups.shape)
-    
+    all_features = np.array(all_features)
     with open(file_name, 'wb') as f:
         np.save(f, all_features)
     print(f"SAved feature at {file_name}")
