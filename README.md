@@ -6,6 +6,12 @@
     conda activate R_YOLO
     # Install:
     pip install -r requirements.txt
+    
+## Dataset download (if necessary):
+    bash download_data.sh
+    
+## Checkpoint download:
+    bash hw3_download.sh
 
 ## Run training code:
     bash hw3_train.sh $1 $2 $3 $4 $5
