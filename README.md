@@ -146,10 +146,12 @@ _______________
 
 - Origin	
 
+
 	python main.py --resume "init" --eval_path ../hw3_data/hw3_dataset/org/val --eval --out_path ./output/pred_init_origin.json
 	python ../check_your_prediction_valid.py ./output/pred_init_origin.json ../hw3_data/hw3_dataset/org/val.coco.json
 
 - Adverse
+
 
 	python main.py --resume "init" --eval_path ../hw3_data/hw3_dataset/fog/val --eval --is_adverse --out_path ./output/pred_init_adverse.json
 	python ../check_your_prediction_valid.py ./output/pred_init_adverse.json ../hw3_data/hw3_dataset/fog/val.coco.json
