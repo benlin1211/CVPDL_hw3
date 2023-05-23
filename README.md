@@ -107,7 +107,3 @@ _______________
 ### Coco
     python main.py --resume "coco" --eval_path ../hw3_data/hw3_dataset/fog/val --eval --is_adverse --out_path ./output/pred_init.json
     python ../check_your_prediction_valid.py ./output/pred_init.json ../hw3_data/hw3_dataset/fog/val.coco.json
-
-### Imagenet
-    python main.py --resume "imagenet" --eval_path ../hw3_data/hw3_dataset/fog/val --eval --is_adverse --out_path ./output/pred_init.json
-    python ../check_your_prediction_valid.py ./output/pred_init.json ../hw3_data/hw3_dataset/fog/val.coco.json
