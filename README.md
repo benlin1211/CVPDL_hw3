@@ -109,17 +109,59 @@ _______________
     python main.py --resume ./runs/detect/train/weights/last.pt --report --test_path ../hw3_data/hw3_dataset/fog/val --file_name ./all_feature_2.npy
     python report_tsne.py
 
-## For report 2:
-    cd ./yolov8 
 
-### Source
-    python main.py --resume ./runs/detect/train/weights/last.pt --eval_path ../hw3_data/hw3_dataset/fog/val --eval --is_adverse --out_path ./output/pred_adverse.json
-    python ../check_your_prediction_valid.py ./output/pred_adverse.json ../hw3_data/hw3_dataset/fog/val.coco.json
+# For report 2:
+	
+	# Adaptive
+	cd ./R_YOLO
+	# Others
+	cd ./yolov8
 
-### Init
-    python main.py --resume "init" --eval_path ../hw3_data/hw3_dataset/fog/val --eval --is_adverse --out_path ./output/pred_init.json
-    python ../check_your_prediction_valid.py ./output/pred_init.json ../hw3_data/hw3_dataset/fog/val.coco.json
+## Adaptive
 
-### Coco
-    python main.py --resume "coco" --eval_path ../hw3_data/hw3_dataset/fog/val --eval --is_adverse --out_path ./output/pred_init.json
-    python ../check_your_prediction_valid.py ./output/pred_init.json ../hw3_data/hw3_dataset/fog/val.coco.json
+- Origin
+
+	python detect.py --weight ./runs/train/exp/weights/best.pt --source ../hw3_data_org/hw3_dataset/ --output_path ./output/pred_origin.json
+	python ../check_your_prediction_valid.py ./output/pred_origin.json ../hw3_data/hw3_dataset/org/val.coco.json 
+
+- Adverse
+
+	python detect.py --weight ./runs/train/exp/weights/best.pt --source ../hw3_data_eval/hw3_dataset/ --output_path ./output/pred_adverse.json
+	python ../check_your_prediction_valid.py ./output/pred_adverse.json ../hw3_data/hw3_dataset/fog/val.coco.json 
+
+
+## Source
+
+- Origin	
+
+	python main.py --resume ./runs/detect/train/weights/last.pt --eval_path ../hw3_data/hw3_dataset/org/val --eval --out_path ./output/pred_origin.json
+	python ../check_your_prediction_valid.py ./output/pred_origin.json ../hw3_data/hw3_dataset/org/val.coco.json
+
+- Adverse
+
+	python main.py --resume ./runs/detect/train/weights/last.pt --eval_path ../hw3_data/hw3_dataset/fog/val --eval --is_adverse --out_path ./output/pred_adverse.json
+	python ../check_your_prediction_valid.py ./output/pred_adverse.json ../hw3_data/hw3_dataset/fog/val.coco.json
+
+## Init
+
+- Origin	
+
+	python main.py --resume "init" --eval_path ../hw3_data/hw3_dataset/org/val --eval --out_path ./output/pred_init_origin.json
+	python ../check_your_prediction_valid.py ./output/pred_init_origin.json ../hw3_data/hw3_dataset/org/val.coco.json
+
+- Adverse
+
+	python main.py --resume "init" --eval_path ../hw3_data/hw3_dataset/fog/val --eval --is_adverse --out_path ./output/pred_init_adverse.json
+	python ../check_your_prediction_valid.py ./output/pred_init_adverse.json ../hw3_data/hw3_dataset/fog/val.coco.json
+
+## Coco
+
+- Origin
+
+	python main.py --resume "coco"  --eval_path ../hw3_data/hw3_dataset/org/val --eval --out_path ./output/pred_coco_origin.json
+	python ../check_your_prediction_valid.py ./output/pred_coco_origin.json ../hw3_data/hw3_dataset/org/val.coco.json
+
+- Adverse
+
+	python main.py --resume "coco" --eval_path ../hw3_data/hw3_dataset/fog/val --eval --is_adverse --out_path ./output/pred_coco_adverse.json
+	python ../check_your_prediction_valid.py ./output/pred_coco_adverse.json ../hw3_data/hw3_dataset/fog/val.coco.json
