@@ -1,8 +1,14 @@
 # CVPDL_hw3
 ## Envirement Setup:
+    # create conda env
+    conda create -n R_YOLO python=3.10
+    # activate the enviorment
+    conda activate R_YOLO
+    # install 
+    pip install -r requirements.txt
 
 ## Run training code:
-    bash hw3_train.sh   $1 $2 $3 $4 $5
+    bash hw3_train.sh $1 $2 $3 $4 $5
 Parameters:
 - $1: train source images directory (./hw3_data/hw3_dataset/org/train/)
 - $2: train target images directory (./hw3_data/hw3_dataset/fog/train/)
