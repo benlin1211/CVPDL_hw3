@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# ${1}: train images directory (../hw3_data/hw3_dataset/org/train/)
+# ${2}: valid images directory (../hw3_data/hw3_dataset/fog/valid/)
+
 # Convert data and label to acceptable dataset format.
 ## move data
 python utils/move_data.py --png_dir ../hw3_data/hw3_dataset/org/train/ --save_dir ./dataset/Normal_to_Foggy/images --mode train --is_origin
@@ -36,5 +39,5 @@ python utils/label_json2Ryolo.py --coco_file ../hw3_data/hw3_dataset/org/train.c
 
 
 # move the translation image
-cp -r ./dataset/Normal_to_Foggy/images/Foggy_fake/* ./dataset/Normal_to_Foggy/images/Normal_train/ 
-cp -r ./dataset/Normal_to_Foggy/images/Normal_fake/* ./dataset/Normal_to_Foggy/images/Foggy_train/ 
+cp -r ./dataset/Normal_to_Foggy/images/Foggy_fake/* ./dataset/Normal_to_Foggy/images/Foggy_train/ 
+cp -r ./dataset/Normal_to_Foggy/images/Normal_fake/* ./dataset/Normal_to_Foggy/images/Normal_train/ 
