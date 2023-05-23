@@ -22,7 +22,11 @@ Parameters:
 
 e.g.
 
-    bash hw3_inference.sh ./hw3_data_eval/hw3_dataset/ ./output/pred_eval.json 4
+    bash hw3_inference.sh ./input/test_dir/ ./output/pred.json 4
+    # bash hw3_inference.sh ./hw3_data_test/hw3_dataset/ ./output/pred_test.json 4
+    # bash hw3_inference.sh ../../hw3_data_test/hw3_dataset/ ./output/pred_test.json 4
+    # bash hw3_inference.sh ../../hw3_data_eval_test/hw3_dataset/ ./output/pred_mix.json 4
+    
 
 # Train
 ## Dataset download (if necessary):
