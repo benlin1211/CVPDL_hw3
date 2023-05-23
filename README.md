@@ -77,4 +77,5 @@ ________________________
     python main.py --resume ./runs/detect/train/weights/last.pt --test --test_path ../hw3_data_test/hw3_dataset/ --out_path ./output/pred_test.json
 
 # Plot map@50
-python utils/draw_plot.py --csv_file ./runs/detect/train/results.csv --out_file ./map50_yolov8.png
+
+    python utils/draw_plot.py --csv_file ./runs/detect/train/results.csv --out_file ./map50_yolov8.png
