@@ -48,4 +48,33 @@ e.g.
 ## Run evaluation code:
     python ./R_YOLO/val.py --weight ./R_YOLO/runs/train/exp/weights/best.pt
 
+________________________
+# For problem one:
 
+## Envirement Setup:
+    cd yolov8
+    conda create --name yolov8 python=3.10
+    conda activate yolov8
+    pip install -r requirements.txt
+    bash make_yolo_dataset.sh 
+    bash make_adverse_dataset.sh 
+
+## Train:
+    python main.py
+
+## Train from your own checkpoints
+    python main.py --resume ./runs/detect/train/weights/last.pt
+
+## Eval on origin
+    python main.py --resume ./runs/detect/train/weights/last.pt --eval_path ../hw3_data/hw3_dataset/org/val --eval --out_path ./output/pred_eval.json
+    python ../check_your_prediction_valid.py ./output/pred_eval.json ../hw3_data/hw3_dataset/org/val.coco.json 
+
+## Eval on adverse
+    python main.py --resume ./runs/detect/train/weights/last.pt --eval_path ../hw3_data/hw3_dataset/fog/val --eval --is_adverse --out_path ./output/pred_adverse.json
+    python ../check_your_prediction_valid.py ./output/pred_adverse.json ../hw3_data/hw3_dataset/fog/val.coco.json
+
+## Test 
+    python main.py --resume ./runs/detect/train/weights/last.pt --test --test_path ../hw3_data_test/hw3_dataset/ --out_path ./output/pred_test.json
+
+# Plot map@50
+python utils/draw_plot.py --csv_file ./runs/detect/train/results.csv --out_file ./map50_yolov8.png
