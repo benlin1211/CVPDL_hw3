@@ -45,7 +45,23 @@ e.g.
     bash hw3_train.sh ./hw3_data/hw3_dataset/org/train/ ./hw3_data/hw3_dataset/fog/train/ ./hw3_data/hw3_dataset/fog/val/ ./hw3_data/hw3_dataset/org/train.coco.json ./hw3_data/hw3_dataset/fog/val.coco.json
 
 ## Run evaluation code:
-    python ./R_YOLO/val.py --weight ./R_YOLO/runs/train/exp/weights/best.pt
+
+    # Eval
+    python val.py --weight ./runs/train/exp/weights/best.pt
+    #python detect.py --weight ./runs/train/exp3/weights/best.pt --source ../hw3_data_eval/hw3_dataset/ --output_path ./output/pred_eval.json
+    #python detect.py --weight ./runs/train/exp3/weights/best.pt --source ../hw3_data_test/hw3_dataset/ --output_path ./output/pred_test.json
+
+## Run Inference code:
+Inference on val:
+
+    bash hw3_inference.sh ./hw3_data_eval/hw3_dataset/ ./output/pred_eval.json 4
+    #python detect.py --weight ./runs/train/exp/weights/best.pt --source ../hw3_data_eval/hw3_dataset/ --output_path ./output/pred_eval.json
+    python ../check_your_prediction_valid.py ./output/pred_eval.json ../hw3_data/hw3_dataset/fog/val.coco.json 
+
+Inference on public_test:
+
+    bash hw3_inference.sh ./hw3_data_test/hw3_dataset/ ./output/pred_test.json 4
+    #python detect.py --weight ./runs/train/exp/weights/best.pt --source ../hw3_data_test/hw3_dataset/ --output_path ./output/pred_test.json
 
 ________________________
 # For problem one:
