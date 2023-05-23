@@ -83,8 +83,15 @@ def main(args):
     random.seed(seed)
 
     if args.eval:
-        print(f"eval, resume from {args.resume}, confidence={args.confidence}")
-        model = YOLO(args.resume)
+        if "init" in args.resume:
+            print(f"Eval, no resume, confidence={args.confidence}")
+            model = YOLO()
+        elif "coco" in args.resume:
+            print(f"Eval, resume from coco, confidence={args.confidence}")
+            model = YOLO("yolov8x.pt")
+        else:
+            print(f"Eval, resume from {args.resume}, confidence={args.confidence}")
+            model = YOLO(args.resume)
         # https://docs.ultralytics.com/modes/predict/#sources
         # if args.is_adverse:
         #     metrics = model.val(data="./hw3_dataset_adverse.yaml", batch=16, save_json=True, conf=args.confidence)
