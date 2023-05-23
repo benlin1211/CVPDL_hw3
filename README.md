@@ -111,13 +111,10 @@ _______________
 
 
 # For report 2:
-	
-	# Adaptive
-	cd ./R_YOLO
-	# Others
-	cd ./yolov8
 
 ## Adaptive
+
+	cd ./R_YOLO
 
 Origin
 
@@ -131,6 +128,8 @@ Adverse
 
 
 ## Source
+
+	cd ./yolov8
 
 Origin	
 
