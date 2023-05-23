@@ -38,4 +38,5 @@ Parameters:
       e.g., 0 indicates the 0% checkpoint, and 3 indicates the 100% checkpoint, and 4 indicates the best checkpoint.
 
 e.g.
+
     bash hw3_inference.sh ./hw3_data_eval/hw3_dataset/ ./output/pred_eval.json 4
