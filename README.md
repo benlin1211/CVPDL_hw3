@@ -81,13 +81,13 @@ ________________________
     
 _______________
 # Report 
-## For report 1: 
+## For report 1 source model: 
     cd ./R_YOLO
     python report.py --weight ./runs/train/exp/weights/best.pt --source ../hw3_data/hw3_dataset/org/val --file_name ./all_feature_3.npy --imgsz 640
     python report.py --weight ./runs/train/exp/weights/best.pt --source ../hw3_data/hw3_dataset/fog/val --file_name ./all_feature_4.npy --imgsz 640
     python report_tsne.py
 
-## For report 1:
+## For report 1 adapted model:
     cd ./yolov8 
     python main.py --resume ./runs/detect/train/weights/last.pt --report --test_path ../hw3_data/hw3_dataset/org/val --file_name ./all_feature_1.npy
     python main.py --resume ./runs/detect/train/weights/last.pt --report --test_path ../hw3_data/hw3_dataset/fog/val --file_name ./all_feature_2.npy
