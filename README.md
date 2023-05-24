@@ -101,7 +101,7 @@ _______________
     python report.py --weight ./runs/train/exp/weights/best.pt --source ../hw3_data/hw3_dataset/org/val --file_name ./all_feature_3.npy --imgsz 640
     python report.py --weight ./runs/train/exp/weights/best.pt --source ../hw3_data/hw3_dataset/fog/val --file_name ./all_feature_4.npy --imgsz 640
     cd ..
-    python report_tsne.py ./R_YOLO/all_feature_3.npy ./R_YOLO/all_feature_4.npy "t-SNE: Adapted model inference"./report_bonus34.png
+    python report_tsne.py ./R_YOLO/all_feature_3.npy ./R_YOLO/all_feature_4.npy "t-SNE: Adapted model inference" ./report_bonus34.png
 
 
 ## For report 1 source model:
