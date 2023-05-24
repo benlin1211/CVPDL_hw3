@@ -65,8 +65,7 @@ Inference on public_test:
 
 ## Plot map@50
 
-    python draw_plot.py --csv_file ./runs/train/exp/results.csv --out_file ./map50_yolov8.png
-    
+    python draw_plot.py --csv_file ./runs/train/exp/results.csv --out_file ./map50_R_YOLO.png
 ________________________
 # For problem one:
 
@@ -95,6 +94,9 @@ ________________________
 ## Test 
     python main.py --resume ./runs/detect/train/weights/last.pt --test --test_path ../hw3_data_test/hw3_dataset/ --out_path ./output/pred_test.json
 
+## Plot map@50
+
+    python draw_plot.py --csv_file ./runs/train/exp/results.csv --out_file ./map50_yolov8.png
 _______________
 # Report 
 ## For report 1 source model: 
