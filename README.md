@@ -93,7 +93,7 @@ ________________________
 
 ## Plot map@50
 
-    python draw_plot.py --csv_file ./runs/train/exp/results.csv --out_file ./map50_yolov8.png
+    python draw_plot.py --csv_file ./runs/detect/train/results.csv --out_file ./map50_yolov8.png
 _______________
 # Report 
 ## For report 1 adapted model: 
