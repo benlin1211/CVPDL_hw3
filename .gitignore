@@ -16,3 +16,4 @@ __pycache__/
 *.png
 *.npy
 hw3_data/*
+*/output/*
