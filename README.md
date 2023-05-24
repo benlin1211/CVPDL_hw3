@@ -99,17 +99,20 @@ ________________________
     python draw_plot.py --csv_file ./runs/train/exp/results.csv --out_file ./map50_yolov8.png
 _______________
 # Report 
-## For report 1 source model: 
+## For report 1 adapted model: 
     cd ./R_YOLO
     python report.py --weight ./runs/train/exp/weights/best.pt --source ../hw3_data/hw3_dataset/org/val --file_name ./all_feature_3.npy --imgsz 640
     python report.py --weight ./runs/train/exp/weights/best.pt --source ../hw3_data/hw3_dataset/fog/val --file_name ./all_feature_4.npy --imgsz 640
-    python report_tsne.py
+    cd ..
+    python report_tsne.py ./R_YOLO/all_feature_3.npy ./R_YOLO/all_feature_4.npy "t-SNE: Adapted model inference"./report_bonus34.png
 
-## For report 1 adapted model:
+
+## For report 1 source model:
     cd ./yolov8 
     python main.py --resume ./runs/detect/train/weights/last.pt --report --test_path ../hw3_data/hw3_dataset/org/val --file_name ./all_feature_1.npy
     python main.py --resume ./runs/detect/train/weights/last.pt --report --test_path ../hw3_data/hw3_dataset/fog/val --file_name ./all_feature_2.npy
-    python report_tsne.py
+    cd ..
+    python report_tsne.py ./yolov8/all_feature_1.npy ./yolov8/all_feature_2.npy "t-SNE: Source model inference" ./report_bonus12.png
 
 
 # For report 2:
