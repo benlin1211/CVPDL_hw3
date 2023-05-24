@@ -63,6 +63,10 @@ Inference on public_test:
     bash hw3_inference.sh ./hw3_data_test/hw3_dataset/ ./output/pred_test.json 4
     #python detect.py --weight ./runs/train/exp/weights/best.pt --source ../hw3_data_test/hw3_dataset/ --output_path ./output/pred_test.json
 
+## Plot map@50
+
+    python draw_plot.py --csv_file ./runs/train/exp/results.csv --out_file ./map50_yolov8.png
+    
 ________________________
 # For problem one:
 
@@ -91,10 +95,6 @@ ________________________
 ## Test 
     python main.py --resume ./runs/detect/train/weights/last.pt --test --test_path ../hw3_data_test/hw3_dataset/ --out_path ./output/pred_test.json
 
-# Plot map@50
-
-    python draw_plot.py --csv_file ./runs/detect/train/results.csv --out_file ./map50_yolov8.png
-    
 _______________
 # Report 
 ## For report 1 source model: 
