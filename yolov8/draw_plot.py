@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 def get_args_parser():
     parser = argparse.ArgumentParser('Draw map at 50 plot.', add_help=False)
     # parser.add_argument('--lr', default=1e-4, type=float)
-    parser.add_argument('--csv_file', default="./runs/train/exp/results.csv") 
-    parser.add_argument('--out_file', default="./map50_R_YOLO.png") 
+    parser.add_argument('--csv_file', default="./runs/detect/train/results.csv") 
+    parser.add_argument('--out_file', default="./map50_yolov8.png") 
     
     # python utils/draw_plot.py --csv_file ./runs/train/exp/results.csv
     # ===================== Train Config ====================

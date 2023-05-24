@@ -28,7 +28,7 @@ def get_args_parser():
     #  https://docs.ultralytics.com/modes/train/#arguments
     # ===================== Eval Config =====================
     parser.add_argument('--resume', default='', help='resume from checkpoint (xxx.pt)') #./runs/detect/train/weights/best.pt
-    parser.add_argument('--confidence', default=0.25, type=float) 
+    parser.add_argument('--confidence', default=0.01, type=float) 
     parser.add_argument('--eval', action='store_true')
     parser.add_argument('--eval_path', default='./datasets/hw1_dataset_yolo/images/val', type=str)
     # ===================== Test Config =====================
