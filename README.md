@@ -48,23 +48,20 @@ e.g.
 
     # Eval
     python val.py --weight ./runs/train/exp/weights/best.pt
-    #python detect.py --weight ./runs/train/exp3/weights/best.pt --source ../hw3_data_eval/hw3_dataset/ --output_path ./output/pred_eval.json
-    #python detect.py --weight ./runs/train/exp3/weights/best.pt --source ../hw3_data_test/hw3_dataset/ --output_path ./output/pred_test.json
 
 ## Run Inference code:
 Inference on val:
 
-    bash hw3_inference.sh ./hw3_data_eval/hw3_dataset/ ./output/pred_eval.json 4
-    #python detect.py --weight ./runs/train/exp/weights/best.pt --source ../hw3_data_eval/hw3_dataset/ --output_path ./output/pred_eval.json
+    # bash hw3_inference.sh ./hw3_data_eval/hw3_dataset/ ./output/pred_eval.json 4
+    python detect.py --weight ./runs/train/exp/weights/best.pt --source ../hw3_data_eval/hw3_dataset/ --output_path ./output/pred_eval.json
     python ./check_your_prediction_valid.py ./output/pred_eval.json ./hw3_data/hw3_dataset/fog/val.coco.json 
 
 Inference on public_test:
 
-    bash hw3_inference.sh ./hw3_data_test/hw3_dataset/ ./output/pred_test.json 4
-    #python detect.py --weight ./runs/train/exp/weights/best.pt --source ../hw3_data_test/hw3_dataset/ --output_path ./output/pred_test.json
+    # bash hw3_inference.sh ./hw3_data_test/hw3_dataset/ ./output/pred_test.json 4
+    python detect.py --weight ./runs/train/exp/weights/best.pt --source ../hw3_data_test/hw3_dataset/ --output_path ./output/pred_test.json
 
 ## Plot map@50
-
     python draw_plot.py --csv_file ./runs/train/exp/results.csv --out_file ./map50_R_YOLO.png
 ________________________
 # For problem one:
@@ -115,9 +112,9 @@ _______________
     python report_tsne.py ./yolov8/all_feature_1.npy ./yolov8/all_feature_2.npy "t-SNE: Source model inference" ./report_bonus12.png
 
 
-# For report 2:
+## For report 2:
 
-## Adaptive
+### Adaptive
 
 	cd ./R_YOLO
 
@@ -132,7 +129,7 @@ Adverse
 	python ../check_your_prediction_valid.py ./output/pred_adverse.json ../hw3_data/hw3_dataset/fog/val.coco.json 
 
 
-## Source
+### Source
 
 	cd ./yolov8
 
@@ -146,7 +143,7 @@ Adverse
 	python main.py --resume ./runs/detect/train/weights/last.pt --eval_path ../hw3_data/hw3_dataset/fog/val --eval --is_adverse --out_path ./output/pred_adverse.json
 	python ../check_your_prediction_valid.py ./output/pred_adverse.json ../hw3_data/hw3_dataset/fog/val.coco.json
 
-## Init
+### Init
 
 Origin	
 
@@ -160,7 +157,7 @@ Adverse
 	python main.py --resume "init" --eval_path ../hw3_data/hw3_dataset/fog/val --eval --is_adverse --out_path ./output/pred_init_adverse.json
 	python ../check_your_prediction_valid.py ./output/pred_init_adverse.json ../hw3_data/hw3_dataset/fog/val.coco.json
 
-## Coco
+### Init: Coco pretrain
 
 Origin
 
