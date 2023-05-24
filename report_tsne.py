@@ -1,7 +1,12 @@
+# Ref: 
+# tsne plot: https://www.kaggle.com/code/parulpandey/visualizing-kannada-mnist-with-t-sne
+# add reegion and change custom cmap: https://www.statology.org/matplotlib-scatterplot-legend/
+
 import numpy as np
 from sklearn.manifold import TSNE
 import matplotlib.pyplot as plt
 import argparse
+from matplotlib.colors import ListedColormap
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser('Draw report 1', add_help=False)
@@ -23,15 +28,14 @@ if __name__ == "__main__":
     print(features.shape)
     print(groups.shape)
 
-    tsne = TSNE(n_components=2, verbose=1, random_state=123)
+    tsne = TSNE(n_components=2, verbose=1, random_state=1211)
     features_tsne = tsne.fit_transform(features) 
 
-
     classes=["clear-val", "foggy-val"]
-    scatter = plt.scatter(features_tsne[:, 0], features_tsne[:, 1], s=10, c=groups, cmap='Spectral')
+    colors = ListedColormap(['black', 'orange'])
+    scatter = plt.scatter(features_tsne[:, 0], features_tsne[:, 1], s=10, c=groups, cmap=colors)
     plt.gca().set_aspect('equal', 'datalim')
     n_groups = len(classes)
-    cb1 = plt.colorbar(boundaries=np.arange(n_groups+1)-0.5).set_ticks(np.arange(n_groups))
     plt.title(args.title, fontsize=12)
     plt.legend(handles=scatter.legend_elements()[0], labels=classes)
     save_img_as = args.out_png_name # = os.path.join(output_dir, f"Report 2-3 usps tsne by class.png")
